@@ -6,27 +6,34 @@ class Array
     self.sort{|v1, v2| v2[1] <=> v1[1]}
   end
 end
+
 class List
-  attr_accessor :id, :name
+  attr_accessor :id, :name, :tweets
 
   def initialize id, name
-    @id = id; @name = name
+    @id = id; @name = name; @tweets = []
   end
 
   def user
     @user ||= User.new
   end
 
-  def timeline
-    tweets = if id
-               user.client.list_timeline(id, count: 200)
-             else
-               user.timeline(count: 200)
-             end
-    @links ||= tweets.map{|t|
-      t.urls.map{|u|
+  def crawl_tweets count: 5, max_id: nil
+    return true if count < 0
+    params = {count: 200}
+    params[:max_id] = max_id if max_id
+    _tweets = if id
+                user.client.list_timeline(id, params)
+              else
+                user.timeline(params)
+              end
+    @tweets += _tweets.map{|_t|
+      tweet = Tweet.new(id: _t.id)
+      tweet.links = _t.urls.map{|u|
         u.url.to_s
       }
-    }.flatten
+      tweet
+    }
+    crawl_tweets count: (count -= 1), max_id: @tweets.last.id
   end
 end

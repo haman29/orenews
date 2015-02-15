@@ -1,9 +1,9 @@
-class Link
-  attr_accessor :link
-  def initialize link
-    @link = link
-  end
-  def user
-    @user ||= User.new
-  end
-end
+# class Link
+  # attr_accessor :uri
+  # def initialize uri: nil
+    # @uri = uri
+  # end
+  # def user
+    # @user ||= User.new
+  # end
+# end
