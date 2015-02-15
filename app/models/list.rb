@@ -1,6 +1,9 @@
 class Array
   def summarize
-    self.group_by{|i| i}.map{|k,v| [k, v.count] }.to_h
+    self.group_by{|i| i}.map{|k,v| [k, v.count] }
+  end
+  def sort_by_value
+    self.sort{|v1, v2| v2[1] <=> v1[1]}
   end
 end
 class List
